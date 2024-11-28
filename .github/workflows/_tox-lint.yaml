@@ -1,0 +1,24 @@
+name: Lint python code
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        default: "3.11"
+        type: string
+      poetry-version:
+        default: "1.8.3"
+        type: string
+
+jobs:
+  lint:
+    name: Static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/poetry-setup
+        with:
+          python-version: ${{ inputs.python-version }}
+          poetry-version: ${{ inputs.poetry-version }}
+      - name: run tox lint and type
+        run: tox -e lint,type
