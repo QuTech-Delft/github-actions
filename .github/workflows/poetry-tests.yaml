@@ -22,9 +22,6 @@ on:
       e2e_password:
         description: "E2E password"
         required: true
-      github_token:
-        description: "GitHub token"
-        required: true
 
 jobs:
   lint:

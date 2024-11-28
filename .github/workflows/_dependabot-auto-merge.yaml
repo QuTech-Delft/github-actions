@@ -2,9 +2,6 @@ name: Auto-merge PR's from dependabot
 
 on:
   workflow_call:
-    secrets:
-      github_token:
-        required: true
 
 jobs:
   auto-merge-dependabot:
