@@ -15,7 +15,7 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: actions/checkout@v4
-      - uses: QuTech-Delft/GitHub-Actions/poetry-setup@fix/QI2-1219/fix-failing-action-import
+      - uses: QuTech-Delft/GitHub-Actions/poetry-setup@master
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
