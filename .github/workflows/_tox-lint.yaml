@@ -23,5 +23,6 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
+      - uses: actions/checkout@v4
       - name: run tox lint and type
         run: tox -e lint,type

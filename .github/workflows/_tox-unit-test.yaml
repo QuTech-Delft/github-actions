@@ -32,5 +32,6 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
+      - uses: actions/checkout@v4
       - name: run tox test
         run: tox -e test

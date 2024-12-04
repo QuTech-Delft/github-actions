@@ -24,6 +24,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
+      - uses: actions/checkout@v4
       - name: Install and Build
         if: github.event.action != 'closed' # You might want to skip the build if the PR has been closed
         run: |

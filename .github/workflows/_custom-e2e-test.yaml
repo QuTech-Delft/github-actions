@@ -37,6 +37,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
+      - uses: actions/checkout@v4
       - name: Install packages
         run: poetry install
       - name: Run e2e test
