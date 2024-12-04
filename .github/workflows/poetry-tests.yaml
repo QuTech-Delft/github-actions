@@ -1,0 +1,52 @@
+name: Tests
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        default: "3.11"
+        type: string
+      poetry-version:
+        default: "1.8.3"
+        type: string
+      os-versions:
+        default: "ubuntu-latest,macos-13,macos-14,windows-latest"
+        type: string
+      backends:
+        default: "Stubbed,QX emulator"
+        type: string
+    secrets:
+      e2e_username:
+        description: "E2E username"
+        required: true
+      e2e_password:
+        description: "E2E password"
+        required: true
+jobs:
+  lint:
+    uses: qutech-delft/github-actions/.github/workflows/_tox-lint.yaml@master
+    with:
+      python-version: ${{ inputs.python-version }}
+      poetry-version: ${{ inputs.poetry-version }}
+  unit-test:
+    uses: qutech-delft/github-actions/.github/workflows/_tox-unit-test.yaml@master
+    with:
+      python-version: ${{ inputs.python-version }}
+      poetry-version: ${{ inputs.poetry-version }}
+      os-versions: ${{ inputs.os-versions }}
+  e2e-test:
+    uses: qutech-delft/github-actions/.github/workflows/_custom-e2e-test.yaml@master
+    with:
+      python-version: ${{ inputs.python-version }}
+      poetry-version: ${{ inputs.poetry-version }}
+      backends: ${{ inputs.backends }}
+    secrets:
+      e2e_username: ${{ secrets.e2e_username }}
+      e2e_password: ${{ secrets.e2e_password }}
+  complete:
+    uses: qutech-delft/github-actions/.github/workflows/_custom-validation.yaml@master
+    needs: [lint, unit-test, e2e-test]
+  auto-merge-dependabot:
+    uses: qutech-delft/github-actions/.github/workflows/_dependabot-auto-merge.yaml@master
+    needs: complete
+    secrets:
+      github_token: ${{ secrets.github_token }}

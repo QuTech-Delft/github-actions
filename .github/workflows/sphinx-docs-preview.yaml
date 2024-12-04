@@ -1,0 +1,30 @@
+# .github/workflows/preview.yml
+name: PR docs preview
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        default: "3.11"
+        type: string
+      poetry-version:
+        default: "1.8.3"
+        type: string
+concurrency: preview-${{ github.ref }}
+jobs:
+  deploy-preview:
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/poetry-setup
+        with:
+          python-version: ${{ inputs.python-version }}
+          poetry-version: ${{ inputs.poetry-version }}
+      - name: Install and Build
+        if: github.event.action != 'closed' # You might want to skip the build if the PR has been closed
+        run: |
+          tox -e docs
+      - name: Deploy preview
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: ./docs/_build/html/
