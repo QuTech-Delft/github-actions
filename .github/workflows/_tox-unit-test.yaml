@@ -2,14 +2,11 @@ name: Unit test python code
 on:
   workflow_call:
     inputs:
-      python-versions:
-        default: "3.9,3.10,3.11,3.12"
+      python-version:
+        default: "3.11"
         type: string
       poetry-version:
         default: "1.8.3"
-        type: string
-      os-versions:
-        default: "ubuntu-latest,macos-13,macos-14,windows-latest"
         type: string
 jobs:
   unit-test:
@@ -17,8 +14,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ${{ fromJson(inputs.python-versions) }}
-    runs-on: ${{ fromJson(inputs.os-versions) }}
+        python-version:
+          - 3.9
+          - 3.10
+          - 3.11
+          - 3.12
+    runs-on:
+      - ubuntu-latest
+      - macos-13
+      - macos-14
+      - windows-latest
     env:
       PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
     steps:
