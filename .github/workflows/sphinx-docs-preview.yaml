@@ -3,6 +3,9 @@ name: PR docs preview
 on:
   workflow_call:
     inputs:
+      actions-repo:
+        type: string
+        default: QuTech-Delft/GitHub-Actions
       python-version:
         default: "3.11"
         type: string
@@ -14,9 +17,10 @@ jobs:
   deploy-preview:
     runs-on: "ubuntu-latest"
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - uses: qutech-delft/github-actions/.github/actions/poetry-setup
+      - uses: actions/checkout@v4
+        with:
+          repository: ${{ inputs.actions-repo }}
+      - uses: ./.github/actions/poetry-setup
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}

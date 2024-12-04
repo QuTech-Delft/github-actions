@@ -2,6 +2,9 @@ name: Unit test python code
 on:
   workflow_call:
     inputs:
+      actions-repo:
+        type: string
+        default: QuTech-Delft/GitHub-Actions
       python-versions:
         default: "3.9,3.10,3.11,3.12"
         type: string
@@ -23,7 +26,9 @@ jobs:
       PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
     steps:
       - uses: actions/checkout@v4
-      - uses: qutech-delft/github-actions/.github/actions/poetry-setup
+        with:
+          repository: ${{ inputs.actions-repo }}
+      - uses: ./.github/actions/poetry-setup
         with:
           python-version: ${{ matrix.python-version }}
           poetry-version: ${{ inputs.poetry-version }}

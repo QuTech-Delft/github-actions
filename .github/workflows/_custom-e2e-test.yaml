@@ -2,6 +2,9 @@ name: End to end test python code
 on:
   workflow_call:
     inputs:
+      actions-repo:
+        type: string
+        default: QuTech-Delft/GitHub-Actions
       python-version:
         default: "3.11"
         type: string
@@ -28,7 +31,9 @@ jobs:
       E2E_PASSWORD: ${{ secrets.e2e_password }}
     steps:
       - uses: actions/checkout@v4
-      - uses: qutech-delft/github-actions/.github/actions/poetry-setup
+        with:
+          repository: ${{ inputs.actions-repo }}
+      - uses: ./.github/actions/poetry-setup
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
