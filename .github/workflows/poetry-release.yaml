@@ -2,9 +2,6 @@ name: Releases
 on:
   workflow_call:
     inputs:
-      actions-repo:
-        type: string
-        default: QuTech-Delft/GitHub-Actions
       python-version:
         default: "3.11"
         type: string
@@ -20,9 +17,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-        with:
-          repository: ${{ inputs.actions-repo }}
-      - uses: ./.github/actions/poetry-setup
+      - uses: QuTech-Delft/GitHub-Actions/poetry-setup@fix/QI2-1219/fix-failing-action-import
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
