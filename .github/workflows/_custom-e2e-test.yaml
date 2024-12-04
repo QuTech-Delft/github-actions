@@ -11,10 +11,21 @@ on:
       e2e_path:
         type: string
         required: true
+      idp_url:
+        type: string
+        required: true
+      api_audience:
+        type: string
+        required: true
+      default_host:
+        type: string
+        required: true
     secrets:
       e2e_username:
         required: true
       e2e_password:
+        required: true
+      idp_client_id:
         required: true
 jobs:
   e2e-test:
@@ -28,12 +39,24 @@ jobs:
     env:
       E2E_USERNAME: ${{ secrets.e2e_username }}
       E2E_PASSWORD: ${{ secrets.e2e_password }}
+      IDP_URL: ${{ inputs.idp_url }}
+      IDP_CLIENT_ID: ${{ secrets.idp_client_id }}
+      API_AUDIENCE: ${{ inputs.api_audience }}
+      DEFAULT_HOST: ${{ inputs.default_host }}
     steps:
       - uses: actions/checkout@v4
       - uses: QuTech-Delft/GitHub-Actions/poetry-setup@master
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
+      - name: Get GitHub-Actions
+        run: git clone https://github.com/QuTech-Delft/GitHub-Actions.git
+      - name: Get authentication token
+        run: |
+          poetry install
+          poetry run get_token
+          cat ~/.quantuminspire/config.json
+        working-directory: GitHub-Actions/scripts/oauth_tokens
       - name: Install packages
         run: poetry install
       - name: Run e2e test
