@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: ./.github/actions/poetry-setup
+      - uses: qutech-delft/github-actions/.github/actions/poetry-setup
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}

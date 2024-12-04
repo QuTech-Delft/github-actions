@@ -23,7 +23,7 @@ jobs:
       PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/poetry-setup
+      - uses: qutech-delft/github-actions/.github/actions/poetry-setup
         with:
           python-version: ${{ matrix.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
