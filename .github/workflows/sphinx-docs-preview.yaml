@@ -1,6 +1,5 @@
 # .github/workflows/preview.yml
 name: PR docs preview
-
 on:
   workflow_call:
     inputs:
@@ -10,9 +9,7 @@ on:
       poetry-version:
         default: "1.8.3"
         type: string
-
 concurrency: preview-${{ github.ref }}
-
 jobs:
   deploy-preview:
     runs-on: "ubuntu-latest"
@@ -27,7 +24,6 @@ jobs:
         if: github.event.action != 'closed' # You might want to skip the build if the PR has been closed
         run: |
           tox -e docs
-
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
         with:

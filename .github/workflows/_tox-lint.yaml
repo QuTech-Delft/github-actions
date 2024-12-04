@@ -1,5 +1,4 @@
 name: Lint python code
-
 on:
   workflow_call:
     inputs:
@@ -9,7 +8,6 @@ on:
       poetry-version:
         default: "1.8.3"
         type: string
-
 jobs:
   lint:
     name: Static analysis

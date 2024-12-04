@@ -1,5 +1,5 @@
 name: Install poetry
-description: Install python and poetry
+description: Install python, poetry and tox
 inputs:
   python-version:
     description: "Python version to use"
@@ -7,7 +7,6 @@ inputs:
   poetry-version:
     description: "Poetry version to use"
     default: "1.8.3"
-
 runs:
   using: composite
   steps:

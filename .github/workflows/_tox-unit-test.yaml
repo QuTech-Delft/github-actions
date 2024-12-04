@@ -1,5 +1,4 @@
 name: Unit test python code
-
 on:
   workflow_call:
     inputs:
@@ -12,8 +11,6 @@ on:
       os-versions:
         default: "ubuntu-latest,macos-13,macos-14,windows-latest"
         type: string
-
-
 jobs:
   unit-test:
     name: Unit testing

@@ -1,8 +1,6 @@
 name: Auto-merge PR's from dependabot
-
 on:
   workflow_call:
-
 jobs:
   auto-merge-dependabot:
     name: Auto merge dependabot PR
