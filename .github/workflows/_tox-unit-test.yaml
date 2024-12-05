@@ -2,9 +2,6 @@ name: Unit test python code
 on:
   workflow_call:
     inputs:
-      python-version:
-        default: "3.11"
-        type: string
       poetry-version:
         default: "1.8.3"
         type: string
@@ -33,6 +30,5 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
-      - uses: actions/checkout@v4
       - name: run tox test
         run: tox -e test

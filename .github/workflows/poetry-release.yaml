@@ -21,7 +21,6 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
-      - uses: actions/checkout@v4
       # Setting the proper version
       - name: Get previous Tag
         if: github.ref == 'refs/heads/master'

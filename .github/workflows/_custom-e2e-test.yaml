@@ -8,6 +8,9 @@ on:
       poetry-version:
         default: "1.8.3"
         type: string
+      e2e_path:
+        type: string
+        required: true
     secrets:
       e2e_username:
         required: true
@@ -31,8 +34,7 @@ jobs:
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
-      - uses: actions/checkout@v4
       - name: Install packages
         run: poetry install
       - name: Run e2e test
-        run: poetry run python tests/e2e_test.py "${{ matrix.backend-name }}"
+        run: poetry run python "${{inputs.e2e_path }}" "${{ matrix.backend-name }}"
