@@ -8,9 +8,9 @@ on:
       poetry-version:
         default: "1.8.3"
         type: string
-      backends:
-        default: "Stubbed,QX emulator"
+      e2e_path:
         type: string
+        required: true
     secrets:
       e2e_username:
         required: true
@@ -22,17 +22,19 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        backend-name: ${{ fromJson(inputs.backends) }}
+        backend-name:
+          - Stubbed
+          - QX emulator
     env:
       E2E_USERNAME: ${{ secrets.e2e_username }}
       E2E_PASSWORD: ${{ secrets.e2e_password }}
     steps:
       - uses: actions/checkout@v4
-      - uses: qutech-delft/github-actions/.github/actions/poetry-setup
+      - uses: QuTech-Delft/GitHub-Actions/poetry-setup@master
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
       - name: Install packages
         run: poetry install
       - name: Run e2e test
-        run: poetry run python tests/e2e_test.py "${{ matrix.backend-name }}"
+        run: poetry run python "${{inputs.e2e_path }}" "${{ matrix.backend-name }}"
