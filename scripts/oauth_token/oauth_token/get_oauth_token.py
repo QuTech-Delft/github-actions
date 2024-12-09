@@ -2,7 +2,7 @@ import asyncio
 import json
 import os
 import time
-from contextlib import redirect_stdout
+from pathlib import Path
 from typing import cast
 
 import requests
@@ -30,6 +30,7 @@ def main():
     well_known_endpoint = f"{os.getenv('IDP_URL')}/.well-known/openid-configuration"
     token_endpoint = requests.get(well_known_endpoint).json()["token_endpoint"]
     client_id = os.getenv("IDP_CLIENT_ID")
+    file_encoding = "utf-8"
 
     payload = {
         "grant_type": "password",
@@ -48,10 +49,9 @@ def main():
 
     token_info["generated_at"] = time.time()
     host = os.getenv("DEFAULT_HOST")
-    with redirect_stdout(None):
-        team_member_id = get_team_member_id(
-            host=host, access_token=token_info["access_token"]
-        )
+    team_member_id = get_team_member_id(
+        host=host, access_token=token_info["access_token"]
+    )
     config = json.dumps(
         {
             "auths": {
