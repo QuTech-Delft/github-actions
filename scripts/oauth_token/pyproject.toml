@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "oauth-token"
+version = "0.1.0"
+description = ""
+authors = ["Quantum Inspire <support@quantum-inspire.com>"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+get_token = "oauth_token.get_oauth_token:main"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.32.3"
+pydantic = "^2.10.3"
+qi-compute-api-client = {git = "https://github.com/QuTech-Delft/compute-api-client.git"}
+
+[tool.poetry.group.dev.dependencies]
+black = "^24.10.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
