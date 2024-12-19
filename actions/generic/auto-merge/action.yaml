@@ -1,5 +1,8 @@
 name: Auto-merge
 description: Auto-merge PR's from dependabot
+inputs:
+  github-token:
+    description: "GitHub token for deployment"
 runs:
   using: composite
   steps:
@@ -7,5 +10,5 @@ runs:
     - name: Squash and Merge PR from dependabot
       uses: fastify/github-action-merge-dependabot@v3.11.0
       with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ inputs.github-token }}
         merge-method: squash

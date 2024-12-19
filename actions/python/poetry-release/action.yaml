@@ -7,6 +7,8 @@ inputs:
   poetry-version:
     description: "Poetry version to use"
     default: "1.8.3"
+  github-token:
+    description: "GitHub token for deployment"
 runs:
   using: composite
   steps:
@@ -39,7 +41,7 @@ runs:
       if: github.ref == 'refs/heads/master'
       uses: peaceiris/actions-gh-pages@v4
       with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
+        github_token: ${{ inputs.github-token }}
         publish_dir: ./docs/_build/html/
     # Build package
     - name: Build poetry package
