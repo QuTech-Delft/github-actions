@@ -34,7 +34,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: QuTech-Delft/GitHub-Actions/actions/python/tox-static-check@feature/QI2-1241/rework-to-composite-actions
+      - uses: QuTech-Delft/GitHub-Actions/actions/python/tox-static-check@master
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
@@ -58,7 +58,7 @@ jobs:
       PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
     steps:
       - uses: actions/checkout@v4
-      - uses: QuTech-Delft/GitHub-Actions/actions/python/tox-unit-test@feature/QI2-1241/rework-to-composite-actions
+      - uses: QuTech-Delft/GitHub-Actions/actions/python/tox-unit-test@master
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
@@ -79,7 +79,7 @@ jobs:
       DEFAULT_HOST: ${{ inputs.default_host }}
     steps:
       - uses: actions/checkout@v4
-      - uses: QuTech-Delft/GitHub-Actions/actions/python/e2e-tests@feature/QI2-1241/rework-to-composite-actions
+      - uses: QuTech-Delft/GitHub-Actions/actions/python/e2e-tests@master
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
@@ -112,6 +112,6 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - uses: QuTech-Delft/GitHub-Actions/actions/generic/auto-merge@feature/QI2-1241/rework-to-composite-actions
+      - uses: QuTech-Delft/GitHub-Actions/actions/generic/auto-merge@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
