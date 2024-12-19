@@ -11,7 +11,7 @@ runs:
   using: composite
   steps:
     - uses: actions/checkout@v4
-    - uses: QuTech-Delft/GitHub-Actions/actions/python/poetry-setup@feature/QI2-1241/rework-to-composite-actions
+    - uses: QuTech-Delft/GitHub-Actions/actions/python/poetry-setup@master
       with:
         python-version: ${{ inputs.python-version }}
         poetry-version: ${{ inputs.poetry-version }}

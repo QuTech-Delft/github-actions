@@ -30,30 +30,78 @@ on:
 
 jobs:
   lint:
-    uses: qutech-delft/github-actions/.github/workflows/_tox-lint.yaml@feature/QI2-1241/rework-to-composite-actions
-    with:
-      python-version: ${{ inputs.python-version }}
-      poetry-version: ${{ inputs.poetry-version }}
+    name: Static analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: QuTech-Delft/GitHub-Actions/actions/python/tox-static-check@master
+        with:
+          python-version: ${{ inputs.python-version }}
+          poetry-version: ${{ inputs.poetry-version }}
   unit-test:
-    uses: qutech-delft/github-actions/.github/workflows/_tox-unit-test.yaml@feature/QI2-1241/rework-to-composite-actions
-    with:
-      poetry-version: ${{ inputs.poetry-version }}
+    name: Unit testing
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-13 # runs x64
+          - macos-14 # runs arm64
+          - windows-latest
+        python-version:
+          - "3.9"
+          - "3.10"
+          - "3.11"
+          - "3.12"
+    runs-on: ${{ matrix.os }}
+    env:
+      PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
+    steps:
+      - uses: actions/checkout@v4
+      - uses: QuTech-Delft/GitHub-Actions/actions/python/tox-unit-test@master
+        with:
+          python-version: ${{ inputs.python-version }}
+          poetry-version: ${{ inputs.poetry-version }}
   e2e-test:
-    uses: qutech-delft/github-actions/.github/workflows/_custom-e2e-test.yaml@feature/QI2-1241/rework-to-composite-actions
-    with:
-      python-version: ${{ inputs.python-version }}
-      poetry-version: ${{ inputs.poetry-version }}
-      e2e_path: ${{ inputs.e2e_path }}
-      idp_url: ${{ inputs.idp_url }}
-      api_audience: ${{ inputs.api_audience }}
-      default_host: ${{ inputs.default_host }}
-    secrets:
-      e2e_username: ${{ secrets.e2e_username }}
-      e2e_password: ${{ secrets.e2e_password }}
-      idp_client_id: ${{ secrets.idp_client_id }}
+    name: End to End testing
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        backend-name:
+          - "Stubbed"
+          - "QX emulator"
+    env:
+      E2E_USERNAME:  ${{ secrets.e2e_username }}
+      E2E_PASSWORD:  ${{ secrets.e2e_password }}
+      IDP_CLIENT_ID: ${{ secrets.idp_client_id }}
+      IDP_URL: ${{ inputs.idp_url }}
+      API_AUDIENCE: ${{ inputs.api_audience }}
+      DEFAULT_HOST: ${{ inputs.default_host }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: QuTech-Delft/GitHub-Actions/actions/python/e2e-tests@master
+        with:
+          python-version: ${{ inputs.python-version }}
+          poetry-version: ${{ inputs.poetry-version }}
+          e2e-path: ${{ inputs.e2e_path }}
+          backend-name: ${{ matrix.backend-name }}
   complete:
-    uses: qutech-delft/github-actions/.github/workflows/_custom-validation.yaml@feature/QI2-1241/rework-to-composite-actions
+    # see https://github.community/t/status-check-for-a-matrix-jobs/127354/7
+    name: Report status
     needs: [lint, unit-test, e2e-test]
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: QuTech-Delft/GitHub-Actions/actions/generic/workflow-success@master
   auto-merge-dependabot:
-    uses: qutech-delft/github-actions/.github/workflows/_dependabot-auto-merge.yaml@feature/QI2-1241/rework-to-composite-actions
+    name: Auto merge dependabot PR
     needs: complete
+    if: ${{ (github.event_name == 'pull_request') && (github.actor == 'dependabot[bot]') }}
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: QuTech-Delft/GitHub-Actions/actions/generic/auto-merge@master
