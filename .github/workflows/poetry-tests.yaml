@@ -113,3 +113,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: QuTech-Delft/GitHub-Actions/actions/generic/auto-merge@feature/QI2-1241/rework-to-composite-actions
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
