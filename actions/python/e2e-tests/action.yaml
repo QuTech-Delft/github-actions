@@ -29,7 +29,7 @@ runs:
         poetry install
         poetry run get_token
         cat ~/.quantuminspire/config.json
-      working-directory: GitHub-Actions/scripts/oauth_tokens
+      working-directory: GitHub-Actions/scripts/oauth_token
       shell: bash
     - name: Install packages
       run: poetry install
