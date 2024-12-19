@@ -1,0 +1,20 @@
+name: Static checks
+description: Run linters and type checkers on python code
+inputs:
+  python-version:
+    description: "Python version to use"
+    default: "3.11"
+  poetry-version:
+    description: "Poetry version to use"
+    default: "1.8.3"
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - uses: QuTech-Delft/GitHub-Actions/actions/python/poetry-setup@feature/QI2-1241/rework-to-composite-actions
+      with:
+        python-version: ${{ inputs.python-version }}
+        poetry-version: ${{ inputs.poetry-version }}
+    - name: run tox lint and type
+      run: tox -e lint,type
+      shell: bash

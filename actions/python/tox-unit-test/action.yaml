@@ -1,5 +1,5 @@
-name: Install poetry
-description: Install python, poetry and tox
+name: Run unit tests via Tox
+description: Unit test python code
 inputs:
   python-version:
     description: "Python version to use"
@@ -10,14 +10,11 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Set up Python
-      uses: actions/setup-python@v5
+    - uses: actions/checkout@v4
+    - uses: QuTech-Delft/GitHub-Actions/actions/python/poetry-setup@feature/QI2-1241/rework-to-composite-actions
       with:
         python-version: ${{ inputs.python-version }}
-    - name: Install poetry
-      uses: abatilo/actions-poetry@v3
-      with:
         poetry-version: ${{ inputs.poetry-version }}
-    - name: Install tox
+    - name: run tox test
+      run: tox -e test
       shell: bash
-      run: pip install tox

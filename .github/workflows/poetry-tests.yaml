@@ -30,16 +30,16 @@ on:
 
 jobs:
   lint:
-    uses: qutech-delft/github-actions/.github/workflows/_tox-lint.yaml@master
+    uses: qutech-delft/github-actions/.github/workflows/_tox-lint.yaml@feature/QI2-1241/rework-to-composite-actions
     with:
       python-version: ${{ inputs.python-version }}
       poetry-version: ${{ inputs.poetry-version }}
   unit-test:
-    uses: qutech-delft/github-actions/.github/workflows/_tox-unit-test.yaml@master
+    uses: qutech-delft/github-actions/.github/workflows/_tox-unit-test.yaml@feature/QI2-1241/rework-to-composite-actions
     with:
       poetry-version: ${{ inputs.poetry-version }}
   e2e-test:
-    uses: qutech-delft/github-actions/.github/workflows/_custom-e2e-test.yaml@master
+    uses: qutech-delft/github-actions/.github/workflows/_custom-e2e-test.yaml@feature/QI2-1241/rework-to-composite-actions
     with:
       python-version: ${{ inputs.python-version }}
       poetry-version: ${{ inputs.poetry-version }}
@@ -52,8 +52,8 @@ jobs:
       e2e_password: ${{ secrets.e2e_password }}
       idp_client_id: ${{ secrets.idp_client_id }}
   complete:
-    uses: qutech-delft/github-actions/.github/workflows/_custom-validation.yaml@master
+    uses: qutech-delft/github-actions/.github/workflows/_custom-validation.yaml@feature/QI2-1241/rework-to-composite-actions
     needs: [lint, unit-test, e2e-test]
   auto-merge-dependabot:
-    uses: qutech-delft/github-actions/.github/workflows/_dependabot-auto-merge.yaml@master
+    uses: qutech-delft/github-actions/.github/workflows/_dependabot-auto-merge.yaml@feature/QI2-1241/rework-to-composite-actions
     needs: complete
