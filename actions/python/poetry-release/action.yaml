@@ -1,0 +1,59 @@
+name: Poetry release
+description: Build and deploy package to PyPI and docs to GitHub Pages
+inputs:
+  python-version:
+    description: "Python version to use"
+    default: "3.11"
+  poetry-version:
+    description: "Poetry version to use"
+    default: "1.8.3"
+  github-token:
+    description: "GitHub token for deployment"
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - uses: QuTech-Delft/GitHub-Actions/actions/python/poetry-setup@master
+      with:
+        python-version: ${{ inputs.python-version }}
+        poetry-version: ${{ inputs.poetry-version }}
+    # Setting the proper version
+    - name: Get previous Tag
+      if: github.ref == 'refs/heads/master'
+      id: previous_tag
+      uses: WyriHaximus/github-action-get-previous-tag@v1
+      with:
+        fallback: 0.1.0
+    - name: Set Build version
+      if: github.ref == 'refs/heads/master'
+      run: poetry version "${{ steps.previous_tag.outputs.tag }}.dev${{ github.run_number }}"
+      shell: bash
+    - name: Set Release version
+      if: github.event_name == 'release' && github.event.action == 'created'
+      run: poetry version ${{ github.ref_name }}
+      shell: bash
+    # Build and deploy docs
+    - name: Build docs
+      if: github.ref == 'refs/heads/master'
+      run: tox -e docs
+      shell: bash
+    - name: Deploy docs
+      if: github.ref == 'refs/heads/master'
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ inputs.github-token }}
+        publish_dir: ./docs/_build/html/
+    # Build package
+    - name: Build poetry package
+      run: poetry build
+      shell: bash
+    # Publishing the package
+    - name: Publish distribution 📦 to Test PyPI
+      if: github.ref == 'refs/heads/master'
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+        verbose: true
+    - name: Publish distribution 📦 to PyPI
+      if: github.event_name == 'release' && github.event.action == 'created'
+      uses: pypa/gh-action-pypi-publish@release/v1

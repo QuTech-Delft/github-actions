@@ -1,0 +1,39 @@
+name: e2e tests
+description: Run end to end tests via python code
+inputs:
+  python-version:
+    description: "Python version to use"
+    default: "3.11"
+  poetry-version:
+    description: "Poetry version to use"
+    default: "1.8.3"
+  e2e-path:
+    description: "Path to the end to end test"
+    required: true
+  backend-name:
+    description: "Name of the backend to send the circuit to"
+    required: true
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - uses: QuTech-Delft/GitHub-Actions/actions/python/poetry-setup@master
+      with:
+        python-version: ${{ inputs.python-version }}
+        poetry-version: ${{ inputs.poetry-version }}
+    - name: Get GitHub-Actions
+      run: git clone https://github.com/QuTech-Delft/GitHub-Actions.git
+      shell: bash
+    - name: Get authentication token
+      run: |
+        poetry install
+        poetry run get_token
+        cat ~/.quantuminspire/config.json
+      working-directory: GitHub-Actions/scripts/oauth_token
+      shell: bash
+    - name: Install packages
+      run: poetry install
+      shell: bash
+    - name: Run e2e test
+      run: poetry run python "${{inputs.e2e-path }}" "${{ inputs.backend-name }}"
+      shell: bash
