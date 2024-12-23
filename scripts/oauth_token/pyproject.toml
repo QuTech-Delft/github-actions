@@ -6,16 +6,46 @@ authors = ["Quantum Inspire <support@quantum-inspire.com>"]
 readme = "README.md"
 
 [tool.poetry.scripts]
-get_token = "oauth_token.get_oauth_token:main"
+get_token = "oauth_token.authentication:create_config_file"
 
 [tool.poetry.dependencies]
 python = "^3.10"
 requests = "^2.32.3"
-pydantic = "^2.10.3"
-qi-compute-api-client = {git = "https://github.com/QuTech-Delft/compute-api-client.git"}
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.10.0"
+mypy = { extras = [ "toml",], version = "1.11.2" }
+ruff = "0.8.3"
+
+[tool.mypy]
+python_version = "3.12"
+plugins = [ "pydantic.mypy",]
+warn_unused_configs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+no_implicit_reexport = true
+strict_equality = true
+ignore_missing_imports = true
+show_error_codes = true
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [ "E", "F", "I",]
+
+[tool.ruff.lint.isort]
+combine-as-imports = true
 
 [build-system]
 requires = ["poetry-core"]
