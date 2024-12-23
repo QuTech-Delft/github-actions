@@ -1,0 +1,30 @@
+name: Sphinx docs deploy
+description: Deploy docs to GitHub Pages
+inputs:
+  python-version:
+    description: "Python version to use"
+    default: "3.11"
+  poetry-version:
+    description: "Poetry version to use"
+    default: "1.8.3"
+  github-token:
+    description: "GitHub token for deployment"
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - uses: QuTech-Delft/GitHub-Actions/actions/python/poetry-setup@master
+      with:
+        python-version: ${{ inputs.python-version }}
+        poetry-version: ${{ inputs.poetry-version }}
+    # Build and deploy docs
+    - name: Build docs
+      if: github.ref == 'refs/heads/master'
+      run: tox -e docs
+      shell: bash
+    - name: Deploy docs
+      if: github.ref == 'refs/heads/master'
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ inputs.github-token }}
+        publish_dir: ./docs/_build/html/

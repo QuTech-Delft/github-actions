@@ -1,0 +1,42 @@
+name: Poetry build
+description: Build python package
+inputs:
+  python-version:
+    description: "Python version to use"
+    default: "3.11"
+  poetry-version:
+    description: "Poetry version to use"
+    default: "1.8.3"
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - uses: QuTech-Delft/GitHub-Actions/actions/python/poetry-setup@master
+      with:
+        python-version: ${{ inputs.python-version }}
+        poetry-version: ${{ inputs.poetry-version }}
+    # Setting the proper version
+    - name: Get previous Tag
+      if: github.ref == 'refs/heads/master'
+      id: previous_tag
+      uses: WyriHaximus/github-action-get-previous-tag@v1
+      with:
+        fallback: 0.1.0
+    - name: Set Build version
+      if: github.ref == 'refs/heads/master'
+      run: poetry version "${{ steps.previous_tag.outputs.tag }}.dev${{ github.run_number }}"
+      shell: bash
+    - name: Set Release version
+      if: github.event_name == 'release' && github.event.action == 'created'
+      run: poetry version ${{ github.ref_name }}
+      shell: bash
+    # Build package
+    - name: Build poetry package
+      run: poetry build
+      shell: bash
+    # Archive build artifact
+    - name: Archive build artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist
