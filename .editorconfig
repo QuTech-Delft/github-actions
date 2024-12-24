@@ -10,8 +10,12 @@ trim_trailing_whitespace = true
 insert_final_newline = true
 charset = utf-8
 indent_size = 2
+indent_style = space
 
 # Override for markdown
 [*.{md}]
 trim_trailing_whitespace = false
-indent_style = space
+
+# Override for python
+[*.{py}]
+indent_size = 4
