@@ -3,7 +3,7 @@ import os
 import time
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, cast
+from typing import Any, cast, Tuple
 
 import requests
 
@@ -21,9 +21,28 @@ class IdentityProviderCredentials:
     password: str
 
 
+@dataclass
+class IdentityProviderConfig:
+    client_id: str
+    well_known_endpoint: str
+    audience: str
+
+
 class QI2API:
     def __init__(self, host: str):
         self.host = host
+
+    def get_auth_config(self) -> IdentityProviderConfig:
+        auth_config_url = f"{self.host}/auth_config"
+        response = requests.get(auth_config_url)
+        response.raise_for_status()
+        auth_config = cast(dict[str, Any], response.json())
+
+        return IdentityProviderConfig(
+            auth_config["client_id"],
+            auth_config["well_known_endpoint"],
+            auth_config["audience"],
+        )
 
     def fetch_team_member_id(self, access_token: str) -> int:
         members_url = f"{self.host}/members"
@@ -44,19 +63,23 @@ class QI2API:
 class IdentityProvider:
     """Class for interfacing with the IdentityProvider."""
 
-    def __init__(
-        self,
-        well_known_endpoint: str,
-        client_id: str,
-        credentials: IdentityProviderCredentials,
-        audience: str,
-    ):
-        self.well_known_endpoint = well_known_endpoint
+    def __init__(self, api: QI2API, credentials: IdentityProviderCredentials):
+        self._auth_config = api.get_auth_config()
         self._credentials = credentials
-        self.client_id = client_id
-        self._audience = audience
         self._token_endpoint = self._get_endpoints()
         self._headers = {"Content-Type": "application/x-www-form-urlencoded"}
+
+    @property
+    def client_id(self) -> str:
+        return self._auth_config.client_id
+
+    @property
+    def well_known_endpoint(self) -> str:
+        return self._auth_config.well_known_endpoint
+
+    @property
+    def audience(self) -> str:
+        return self._auth_config.audience
 
     def _get_endpoints(self) -> str:
         response = requests.get(self.well_known_endpoint)
@@ -71,7 +94,7 @@ class IdentityProvider:
             "username": self._credentials.username,
             "password": self._credentials.password,
             "scope": "api-access openid profile email offline_access",
-            "audience": self._audience,
+            "audience": self.audience,
         }
         response = requests.post(self._token_endpoint, headers=self._headers, data=data)
         response.raise_for_status()
@@ -120,15 +143,13 @@ class ConfigurationFile:
         self._config_file.open("w", encoding=self._file_encoding).write(_config)
 
 
+_api = QI2API(os.getenv("DEFAULT_HOST", ""))
 _identity_provider = IdentityProvider(
-    f"{os.getenv('IDP_URL')}/.well-known/openid-configuration",
-    os.getenv("IDP_CLIENT_ID", ""),
+    _api,
     IdentityProviderCredentials(
         os.getenv("E2E_USERNAME", ""), os.getenv("E2E_PASSWORD", "")
-    ),
-    os.getenv("API_AUDIENCE", ""),
+    )
 )
-_api = QI2API(os.getenv("DEFAULT_HOST", ""))
 
 
 def get_auth_info() -> AuthInfo:
