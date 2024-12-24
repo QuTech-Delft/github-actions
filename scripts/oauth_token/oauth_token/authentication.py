@@ -38,7 +38,7 @@ class QI2API:
             member_id = members[0]["id"]
             return cast(int, member_id)
 
-        raise ValueError("Authentication associated with more than one team member")
+        raise AssertionError("Authentication associated with more than one team member")
 
 
 class IdentityProvider:
