@@ -1,5 +1,9 @@
 name: e2e tests
-description: Run end to end tests via python code
+description: |
+  Run end to end tests via python code. 
+  First installs Poetry and logs in to the QI platform, 
+  then runs tests in the configured path and passes the
+  name of the backend under test.
 inputs:
   python-version:
     description: "Python version to use"
@@ -28,7 +32,6 @@ runs:
       run: |
         poetry install
         poetry run get_token
-        cat ~/.quantuminspire/config.json
       working-directory: GitHub-Actions/scripts/oauth_token
       shell: bash
     - name: Install packages
