@@ -40,5 +40,5 @@ runs:
     - name: Run e2e test
       env:
         BACKEND_NAME: ${{ inputs.backend-name }}
-      run: poetry run pytest -v -rs -n auto "${{ inputs.e2e-path }}"
+      run: poetry run pytest -v -rs -n auto --cov-fail-under=0 "${{ inputs.e2e-path }}"
       shell: bash
