@@ -79,7 +79,7 @@ jobs:
       DEFAULT_HOST: ${{ inputs.default_host }}
     steps:
       - uses: actions/checkout@v4
-      - uses: QuTech-Delft/GitHub-Actions/actions/python/e2e-tests@fa88e29f8a194c53b63e0b98a9e9d50c897bb3ef
+      - uses: QuTech-Delft/GitHub-Actions/actions/python/e2e-tests@master
         with:
           python-version: ${{ inputs.python-version }}
           poetry-version: ${{ inputs.poetry-version }}
