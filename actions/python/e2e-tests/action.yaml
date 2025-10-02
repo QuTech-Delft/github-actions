@@ -1,7 +1,7 @@
 name: e2e tests
 description: |
-  Run end to end tests via python code. 
-  First installs Poetry and logs in to the QI platform, 
+  Run end to end tests via python code.
+  First installs Poetry and logs in to the QI platform,
   then runs tests in the configured path and passes the
   name of the backend under test.
 inputs:
@@ -38,5 +38,7 @@ runs:
       run: poetry install
       shell: bash
     - name: Run e2e test
-      run: poetry run python "${{inputs.e2e-path }}" "${{ inputs.backend-name }}"
+      env:
+        BACKEND_NAME: ${{ inputs.backend-name }}
+      run: poetry run pytest -v -rs -n auto --cov-fail-under=0 "${{ inputs.e2e-path }}"
       shell: bash
